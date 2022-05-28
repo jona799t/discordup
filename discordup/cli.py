@@ -1,4 +1,4 @@
-import discord
+from _discord import Discord
 from _distro import findDistroType
 
 def main(install=False):
@@ -7,7 +7,7 @@ def main(install=False):
         print("\033[1m" + "ERROR" + ":\033[0m", "Distro not supported yet")
         exit()
 
-    client = discord.Discord(distroType=distroType)
+    client = Discord(distroType=distroType)
 
     installations = client.findInstallations()
     for installation, details in installations.items():
