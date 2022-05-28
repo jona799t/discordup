@@ -1,5 +1,5 @@
-from _discord import Discord
-from _distro import findDistroType
+from ._discord import Discord
+from ._distro import findDistroType
 
 def main(install=False):
     distroType = findDistroType()
