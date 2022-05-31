@@ -1,6 +1,8 @@
+import shlex
 import argparse
+import os
+from subprocess import Popen, PIPE
 from ._discord import Discord
-from ._distro import findDistroType
 
 def main():
     ap = argparse.ArgumentParser()
@@ -11,14 +13,26 @@ def main():
             f"{args['install']} is not a valid version, please use one of the following: \"stable\", \"ptb\", \"canary\", \"development\" or \"all\"")
         exit()
 
-    distroType = findDistroType()
-    if distroType == "unknown":
-        print("\033[1m" + "ERROR" + ":\033[0m", "Distro not supported yet")
-        exit()
+    discord = Discord()
 
-    client = Discord(distroType=distroType)
+    clientsToReinstall = {
+        "stable": False,
+        "ptb": False,
+        "canary": False,
+        "development": False
+    }
 
-    installations = client.findInstallations()
+    if not os.path.exists("/usr/share/discordup/installed"):
+        print("\033[1m" + "SETUP" + ":\033[0m", "Running first time setup ...")
+        input("\033[1m" + "SETUP" + ":\033[0m Please close all instances of Discord and then click enter")
+        print("\033[1m" + "SETUP" + ":\033[0m", "This may take a few seconds please be patient, your Discord application may disapeer, don't worry it will come back")
+        clientsToReinstall = discord.setup()
+        for command in ["sudo mkdir /usr/share/discordup", "sudo touch /usr/share/discordup/installed"]:
+            _command = shlex.split(command)
+            process = Popen(_command, stdout=PIPE, stderr=PIPE)
+            process.communicate()
+
+    installations = discord.findInstallations()
     if args["install"] == "all":
         for installation in installations:
             installations[installation]["installed"] = True
@@ -27,9 +41,14 @@ def main():
         installations[args["install"]]["installed"] = True
         installations[args["install"]]["version"] = "-1"
 
+    for key, value in clientsToReinstall.items():
+        if value:
+            installations[key]["installed"] = True
+            installations[key]["version"] = "-1"
+
     for installation, details in installations.items():
         if details["installed"]:
-            updateStatus = client.update(installation, details["version"])
+            updateStatus = discord.update(installation, details["version"])
             print("\033[1m"+installation.upper()+":\033[0m", updateStatus)
         else:
             print("\033[1m"+installation.upper()+":\033[0m", "Not installed")
