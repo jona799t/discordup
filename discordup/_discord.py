@@ -53,12 +53,13 @@ class Discord:
             file.extractall(folderLocation)
             file.close()
 
+            for toDelete in [f"{folderLocation}/{discordDictionary[type]['name']}", f"/usr/share/{discordDictionary[type]['name']}"]:
+                command = shlex.split(f"sudo rm -rf '{toDelete}'")
+                process = Popen(command, stdout=PIPE, stderr=PIPE)
+                process.communicate()
+
             os.rename(f"{folderLocation}/{discordDictionary[type]['zipName']}/discord.png", f"{folderLocation}/{discordDictionary[type]['zipName']}/{discordDictionary[type]['name']}.png")
             os.rename(f"{folderLocation}/{discordDictionary[type]['zipName']}", f"{folderLocation}/{discordDictionary[type]['name']}")
-
-            command = shlex.split(f"sudo rm -rf '/usr/share/{discordDictionary[type]['name']}'")
-            process = Popen(command, stdout=PIPE, stderr=PIPE)
-            process.communicate()
 
             command = shlex.split(f"sudo mv '{folderLocation}/{discordDictionary[type]['name']}/{discordDictionary[type]['name']}.png' '/usr/share/pixmaps'")
             process = Popen(command, stdout=PIPE, stderr=PIPE)
