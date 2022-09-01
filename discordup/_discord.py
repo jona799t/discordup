@@ -56,6 +56,10 @@ class Discord:
             os.rename(f"{folderLocation}/{discordDictionary[type]['zipName']}/discord.png", f"{folderLocation}/{discordDictionary[type]['zipName']}/{discordDictionary[type]['name']}.png")
             os.rename(f"{folderLocation}/{discordDictionary[type]['zipName']}", f"{folderLocation}/{discordDictionary[type]['name']}")
 
+            command = shlex.split(f"sudo rm -rf '/usr/share/{discordDictionary[type]['name']}'")
+            process = Popen(command, stdout=PIPE, stderr=PIPE)
+            process.communicate()
+
             command = shlex.split(f"sudo mv '{folderLocation}/{discordDictionary[type]['name']}/{discordDictionary[type]['name']}.png' '/usr/share/pixmaps'")
             process = Popen(command, stdout=PIPE, stderr=PIPE)
             process.communicate()
@@ -130,4 +134,4 @@ class Discord:
 
 if __name__ == "__main__":
     self = Discord()
-    self.setup("stable")
+    self.setup("ptb")
