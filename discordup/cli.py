@@ -25,7 +25,7 @@ def main():
     if not os.path.exists("/usr/share/discordup/installed"):
         print("\033[1m" + "SETUP" + ":\033[0m", "Running first time setup ...")
         input("\033[1m" + "SETUP" + ":\033[0m Please close all instances of Discord and then click enter")
-        print("\033[1m" + "SETUP" + ":\033[0m", "This may take a few seconds please be patient, your Discord application may disapeer, don't worry it will come back")
+        print("\033[1m" + "SETUP" + ":\033[0m", "This may take a few seconds please be patient, your Discord application may disappear, don't worry it will come back")
         clientsToReinstall = discord.setup()
         for command in ["sudo mkdir /usr/share/discordup", "sudo touch /usr/share/discordup/installed"]:
             _command = shlex.split(command)
